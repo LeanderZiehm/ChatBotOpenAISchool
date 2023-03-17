@@ -1,22 +1,32 @@
+const preUser = '<div class="user">'
+const preBot = '<div class="bot">'
+const end = '</div>'
+
+
 $(document).ready(function(){
 
-$('#action_menu_btn').click(function(){$('.action_menu').toggle();});
-
-
-
 //$('#send_btn').click(function(){alert("AAAAAA");});
+
+$('textarea').keyup(function(event) {
+    if (event.keyCode === 13) {
+        $("#send_btn").click();
+    }
+});
 
 
 $('#send_btn').click(function(){
 
 	 var textArea = $('textarea');
+	 var text = textArea.val();
 
-	const pre = '<div class="d-flex justify-content-end mb-4"> <div class="msg_cotainer_send">'
- 	const dre = '<span class="msg_time_send">9:10 AM, Today</span> </div> <div class="img_cont_msg"> <img src="user.svg" class="rounded-circle user_img_msg"> </div> </div>'
+	 if(text == '') return;
 
-
-	$('#chatSpace').append(pre+textArea.val()+dre);
+	$('#chatSpace').append(preUser+text+end);
 	textArea.val('');
+
+	// request chatbot
+
+	$('#chatSpace').append(preBot+"lol"+end);
 
 });
 	
