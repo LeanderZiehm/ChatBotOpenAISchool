@@ -1,6 +1,9 @@
 # ChatBotOpenAISchool
 
-Probably needed tools for us:  ajax, bootstrap, jquery
+Still needed:  bootstrap 5
+
+You need to add a .env file and past in 
+OPENAI_API_KEY="and here your OpenAI Key" to  "IT Chatbot\ChatBotOpenAISchool\OpenAI\.env"
 
 
 ## Useful Commands for Devs:
@@ -17,3 +20,8 @@ https://portal.azure.com/?Microsoft_Azure_Education_correlationId=6690ccdedc0646
 
 
 https://platform.openai.com/docs/api-reference/chat/create
+
+
+
+
+To use import in js you need to add   "type": "module", to package.json

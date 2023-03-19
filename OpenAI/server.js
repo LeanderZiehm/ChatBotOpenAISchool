@@ -6,13 +6,11 @@ import { createServer } from 'http';
 
 const app = express(); 
 const server = createServer(app); 
-const io = new Server(server);
-
-const PORT = 3000 || process.env.PORT;
-//const io = socketio(server);//3000, {cors: {origin: '*',}}
-
-
+const io = new Server(server);//const io = socketio(server);//3000, {cors: {origin: '*',}}
 dotenv.config();
+const PORT = 3000 || process.env.PORT;
+var useAda = true;//cheeper ai model than chatgpt
+
 //console.log(process.env.OPENAI_API_KEY)
 const configuration = new Configuration({
 	apiKey: process.env.OPENAI_API_KEY,
@@ -31,23 +29,33 @@ io.on('connection', socket => {
 	// 	socket.emit('serverResponse', message);
 	// });
 
+
 	socket.on('clientRequest', async message => {
 	
 		  const prompt = message;
+		  var responseText = "";
 
-		  const response = await openai.createCompletion({
-			model: "text-ada-001",
-			prompt: `${prompt}`,
-			temperature: 1, // Higher values means the model will take more risks.
-			max_tokens: 10, // The maximum number of tokens to generate in the completion. Most models have a context length of 2048 tokens (except for the newest models, which support 4096).
-			top_p: 1, // alternative to sampling with temperature, called nucleus sampling
-			frequency_penalty: 0.5, // Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
-			presence_penalty: 0, // Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
-		  });
-		
-		  socket.emit('serverResponse', response.data.choices[0].text);
+		  if(useAda){
+			const response = await openai.createCompletion({
+				model: "text-ada-001",//cheepest model
+				prompt: `${prompt}`,
+				temperature: 1, // Higher values means more random.
+				max_tokens: 10, //maximum 2048
+				frequency_penalty: 0.5, // between -2.0 and 2.0. Positive values penalize
+			  });
+			  responseText = response.data.choices[0].text;
+		  }else{
+			const completion = await openai.createChatCompletion({
+			  model: "gpt-3.5-turbo",//chatgpt
+			  messages: [{role: "user", content: prompt}],
+			  max_tokens: 5,
+			  temperature: 1,
+			});
+			responseText = completion.data.choices[0].message.content;
+		  }
+		  socket.emit('serverResponse',responseText );
 	
 	  });
 	
   });	
-server.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server started on http://localhost:${PORT}`));
