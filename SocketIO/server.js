@@ -1,8 +1,22 @@
-const io = require('socket.io')(3000, {cors: {origin: '*',}});
+const express = require('express');
+const app = express();
+const server = require('http').createServer(app);
+const PORT = 3000 || process.env.PORT;
+const io = require('socket.io')(server);//3000, {cors: {origin: '*',}}
+
+
+app.use(express.static('public'));//displays the index.html file in the public folder
+
+
+
+
+
+// 
+
 
   io.on('connection', socket => {
 	//console.log('New user connected ' + socket.id);
-	console.log(socket.handshake.address);	//get users ip adress and print it
+	//console.log(socket.handshake.address);	//get users ip adress and print it
 	socket.emit('serverResponse', 'Hello Human');
 
 	socket.on('clientRequest', message => {
@@ -12,7 +26,7 @@ const io = require('socket.io')(3000, {cors: {origin: '*',}});
 
   });
 	
-
+  server.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
   
   
